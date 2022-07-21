@@ -1,6 +1,7 @@
-const express = require("express");
 const path = require("path");
+const axios = require("axios");
 const dotenv = require("dotenv");
+const express = require("express");
 
 dotenv.config();
 const BACK_URL = process.env["BACK_URL"];
@@ -11,8 +12,11 @@ webserver.set("view engine", "pug");
 webserver.set("views", path.join(__dirname, "views"));
 
 webserver.get("/", (_req, res) => {
-  //TODO: Make request to the API to get the product and send them to the view
-  res.render("index", { message: "Testing front" });
+  axios.get(BACK_URL).then((response) => {
+    console.log(`status ${response.status}`);
+    console.log(response);
+    res.render("index", { products: response.data });
+  });
 });
 
 webserver.listen(PORT);
